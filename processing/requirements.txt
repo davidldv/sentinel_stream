@@ -1,0 +1,5 @@
+aiokafka
+scikit-learn
+redis
+numpy
+joblib
