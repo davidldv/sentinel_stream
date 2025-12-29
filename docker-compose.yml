@@ -28,6 +28,22 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
 
+  kafka-init:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka-init
+    depends_on:
+      - kafka
+    entrypoint: ["/bin/bash", "-lc"]
+    command: >
+      '
+      echo "Waiting for Kafka...";
+      cub kafka-ready -b kafka:29092 1 60;
+      echo "Creating topic transactions (if missing)...";
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic transactions --partitions 1 --replication-factor 1;
+      echo "Kafka topic init complete.";
+      '
+    restart: "no"
+
   redis:
     image: redis:alpine
     container_name: redis
@@ -51,6 +67,7 @@ services:
     container_name: ingestion
     depends_on:
       - kafka
+      - kafka-init
     ports:
       - "8000:8000"
     environment:
@@ -61,6 +78,7 @@ services:
     container_name: processing
     depends_on:
       - kafka
+      - kafka-init
       - redis
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
@@ -76,6 +94,10 @@ services:
     environment:
       REDIS_URL: redis://redis:6379
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      LLM_PROVIDER: ${LLM_PROVIDER:-gemini}
+      LLM_MODEL: ${LLM_MODEL:-gemini-3-flash-preview}
+      AGENT_MIN_SECONDS_BETWEEN_LLM_CALLS: ${AGENT_MIN_SECONDS_BETWEEN_LLM_CALLS:-10}
 
 volumes:
   postgres_data:

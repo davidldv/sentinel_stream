@@ -28,6 +28,14 @@ A Distributed, Real-Time Intelligent Event Processing System.
      export OPENAI_API_KEY=your_key_here
      ```
 
+   **Gemini (recommended if OpenAI quota is exceeded):**
+   - Copy `.env.example` to `.env`
+   - Set `GEMINI_API_KEY=your_key_here` in `.env`
+
+   **By default, the agent prefers Gemini** (and will only use OpenAI if you set `LLM_PROVIDER=openai`).
+
+   **To reduce LLM calls:** set `AGENT_MIN_SECONDS_BETWEEN_LLM_CALLS=10` (or higher) in `.env`.
+
 2. Start infrastructure and services:
    ```bash
    docker-compose up --build -d
