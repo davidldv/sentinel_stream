@@ -20,10 +20,13 @@ A Distributed, Real-Time Intelligent Event Processing System.
 
    **Alternative (running without Compose):**
    - PowerShell:
+
      ```powershell
      $env:OPENAI_API_KEY = "your_key_here"
      ```
+
    - Bash:
+
      ```bash
      export OPENAI_API_KEY=your_key_here
      ```
@@ -37,11 +40,13 @@ A Distributed, Real-Time Intelligent Event Processing System.
    **To reduce LLM calls:** set `AGENT_MIN_SECONDS_BETWEEN_LLM_CALLS=10` (or higher) in `.env`.
 
 2. Start infrastructure and services:
+
    ```bash
    docker-compose up --build -d
    ```
 
 3. Send a test transaction:
+
    ```bash
    curl -X POST "http://localhost:8000/transactions/" \
         -H "Content-Type: application/json" \
@@ -58,7 +63,7 @@ A Distributed, Real-Time Intelligent Event Processing System.
    ```
 
 4. Check logs to see the pipeline in action:
+
    ```bash
    docker-compose logs -f processing agent
    ```
-
